@@ -1,0 +1,34 @@
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import os
+
+def encrypt_file(password: str, input_file: str, output_file: str):
+    # สร้าง key จาก password (ใช้จริงควรทำ PBKDF2/Scrypt)
+    key = password.encode().ljust(32, b'\0')[:32]  # ทำให้ได้ 32 bytes
+    aesgcm = AESGCM(key)
+
+    nonce = os.urandom(12)  # random 12 bytes
+    with open(input_file, "rb") as f:
+        data = f.read()
+
+    encrypted = aesgcm.encrypt(nonce, data, None)
+
+    with open(output_file, "wb") as f:
+        f.write(nonce + encrypted)  # เก็บ nonce ไว้ด้วย
+
+def decrypt_file(password: str, input_file: str, output_file: str):
+    key = password.encode().ljust(32, b'\0')[:32]
+    aesgcm = AESGCM(key)
+
+    with open(input_file, "rb") as f:
+        file_data = f.read()
+
+    nonce, encrypted = file_data[:12], file_data[12:]
+    decrypted = aesgcm.decrypt(nonce, encrypted, None)
+
+    with open(output_file, "wb") as f:
+        f.write(decrypted)
+
+
+# ตัวอย่างใช้งาน
+encrypt_file("mysecret", "test.txt", "test.enc")
+decrypt_file("mysecret", "test.enc", "test_out.txt")
