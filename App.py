@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 import os
+from hashlib import sha256
 
 # ฟังก์ชัน PKCS7 Padding/Unpadding (สำหรับทั้ง text และ file)
 def pad(data):
@@ -65,6 +66,10 @@ class AESFileEncryptorApp(ctk.CTk):
         # สถานะ (แชร์)
         self.status_label = ctk.CTkLabel(self, text="พร้อมใช้งาน", text_color="green")
         self.status_label.pack(pady=5)
+        
+        
+#=================================================================================================================
+
 
     def setup_text_tab(self):
         # ช่อง input text
@@ -86,6 +91,7 @@ class AESFileEncryptorApp(ctk.CTk):
         self.text_output_label.pack(pady=5)
         self.text_output = ctk.CTkTextbox(self.text_tab, width=550, height=100)
         self.text_output.pack(pady=5)
+        self.text_output.configure(state="disabled")
 
     def setup_file_tab(self):
         # ช่อง input file path
@@ -122,14 +128,16 @@ class AESFileEncryptorApp(ctk.CTk):
     def do_text_encrypt(self):
         try:
             plaintext = self.text_input.get("1.0", "end-1c").encode('utf-8')
-            key_hex = self.key_entry.get().strip()
-            if len(key_hex) != 64:
-                raise ValueError("คีย์ต้องเป็น hex 64 ตัวอักษร (32 bytes)")
-            key = bytes.fromhex(key_hex)
+            
+            key_input = self.key_entry.get().strip().encode('utf-8')
+            key = sha256(key_input).digest()
+            
             encrypted = encrypt(plaintext, key)
             output = encrypted.hex()
+            self.text_output.configure(state="normal")
             self.text_output.delete("1.0", "end")
             self.text_output.insert("1.0", output)
+            self.text_output.configure(state="disabled")
             self.status_label.configure(text="เข้ารหัส text สำเร็จ!", text_color="green")
         except Exception as e:
             self.text_output.delete("1.0", "end")
@@ -139,15 +147,17 @@ class AESFileEncryptorApp(ctk.CTk):
     def do_text_decrypt(self):
         try:
             ciphertext_hex = self.text_input.get("1.0", "end-1c").strip()
-            key_hex = self.key_entry.get().strip()
-            if len(key_hex) != 64:
-                raise ValueError("คีย์ต้องเป็น hex 64 ตัวอักษร (32 bytes)")
-            key = bytes.fromhex(key_hex)
+            
+            key_input = self.key_entry.get().strip().encode('utf-8')
+            key = sha256(key_input).digest()
+            
             ciphertext = bytes.fromhex(ciphertext_hex)
             decrypted = decrypt(ciphertext, key)
             output = decrypted.decode('utf-8')
+            self.text_output.configure(state="normal")
             self.text_output.delete("1.0", "end")
             self.text_output.insert("1.0", output)
+            self.text_output.configure(state="disabled")
             self.status_label.configure(text="ถอดรหัส text สำเร็จ!", text_color="green")
         except Exception as e:
             self.text_output.delete("1.0", "end")
