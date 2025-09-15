@@ -245,14 +245,25 @@ class AESFileEncryptorApp(ctk.CTk):
             # ถอดรหัสไฟล์
             decrypted_data = decrypt(ciphertext, key)
             
-            # สร้าง output path (เติม _decrypted ข้างหลัง)
-            base, ext = os.path.splitext(input_path)
-            output_path = f"{base}_decrypted{ext}"
+            # # สร้าง output path (เติม _decrypted ข้างหลัง)
+            # base, ext = os.path.splitext(input_path)
+            # output_path = f"{base}_decrypted{ext}"
             
             # # สร้าง output path (เติม decrypted_ ข้างหน้า)
             # dirname = os.path.dirname(input_path)
             # filename = os.path.basename(input_path) 
             # output_path = os.path.join(dirname, f"Decrypted_{filename}")            
+            
+            dirname = os.path.dirname(input_path)
+            filename = os.path.basename(input_path)
+            # แยกชื่อไฟล์และนามสกุล
+            base, ext = os.path.splitext(filename)
+            # ลบ _encrypted ถ้ามี
+            if base.endswith('_encrypted'):
+                base = base[:-len('_encrypted')]
+            # เติม _decrypted
+            output_path = os.path.join(dirname, f"{base}_decrypted{ext}")
+            
             
             # บันทึกไฟล์
             with open(output_path, 'wb') as f:
