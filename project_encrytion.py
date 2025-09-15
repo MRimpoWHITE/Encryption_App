@@ -40,7 +40,7 @@ def decrypt(ciphertext, key):
 class AESFileEncryptorApp(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("AES File/Text Encryptor/Decryptor") #หัวโปรแกรม
+        self.title("AES Encryptor/Decryptor") #หัวโปรแกรม
         self.geometry("600x700") #ขนาดหน้าต่าง
         ctk.set_appearance_mode("dark")         #ธีมโปรแกรม
         ctk.set_default_color_theme("blue")
