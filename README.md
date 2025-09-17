@@ -8,12 +8,23 @@ pip install cryptography customtkinter
 
 เข้ารหัสแบบ AES
 
-libraries ที่ใช้
--customtkinter
-  ตกแต่งหน้าตาโปรแกรม
--cryptography
-  เข้ารหัส
--os
-  เข้าถึงไฟล์
--hashlib
-  การแฮชข้อความ
+**Libraries ที่ใช้**
+
+**customtkinter:** ตกแต่งหน้าตาโปรแกรม
+
+**cryptography:** เข้ารหัส
+
+**os:** เข้าถึงไฟล์
+
+**hashlib:** การแฮชข้อความ
+  
+
+  
+## Program location
+
+```bash
+  |---dist
+        |
+        |--- project_encrytion.exe
+```
+    
